@@ -133,7 +133,10 @@ button{font:inherit;cursor:pointer}
 .mnote{font:700 12.5px Nunito;color:var(--mut);margin:2px 0 6px}
 .mi{display:flex;gap:10px;padding:6px 0;border-bottom:1px dotted #d8ccb0}.mi b{font:800 15px Nunito}.mi span{display:block;font:600 13.5px/1.35 Nunito;color:#5b5648}.mi .p{margin-left:auto;font:900 15px Nunito;color:var(--g2);white-space:nowrap}
 /* chase */
-#chase{position:absolute;inset:0;z-index:30;display:none;background:radial-gradient(ellipse at 50% 0%,#2f5e4a,#0f2219 70%);color:#fff;overflow:auto}
+#chase{position:fixed;inset:0;z-index:30;display:none;background:#0c1f17}
+#chase iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.chClose{position:absolute;left:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:2;border:2px solid #e6c878;background:rgba(12,31,23,.92);color:#fff;font:800 14px Nunito,sans-serif;border-radius:999px;padding:8px 14px;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.chClose:focus-visible{outline:3px solid #e6c878;outline-offset:2px}
 #chase.show{display:block}
 .chw{max-width:900px;margin:0 auto;padding:16px 16px 70px}
 .chTop{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -668,107 +671,6 @@ const PREVIEWS = {
     { at: 'clock', kind: 'clockout', label: 'Finish at the time clock' }] }
 };
 
-/* --------------------------- MENU CHASE bank --------------------------- */
-/* [question, correct, wrong, wrong, wrong] all from the June 2026 menus */
-const CHASE = [
-  ['On which days is The Grille closed?', 'Monday and Tuesday', 'Sunday and Monday', 'Tuesday and Wednesday', 'Monday only'],
-  ['What time does The Grille close on Sunday?', '8 pm', '9 pm', '7 pm', '10 pm'],
-  ['The Grille is open Wednesday through Saturday from:', '11 am to 9 pm', '11 am to 8 pm', '10 am to 9 pm', 'Noon to 10 pm'],
-  ['The reservation line for The Grille is:', '864-580-2299', '864-580-2929', '864-508-2299', '864-580-9922'],
-  ['Arancini is a crispy fritter made of:', 'Mozzarella stuffed risotto', 'Mac and cheese', 'Mashed potato', 'Rice and sausage'],
-  ['How much is the Arancini?', '14', '12', '11', '9'],
-  ['The Chicken and Waffle Skewer is served with:', 'Maple syrup', 'Honey butter', 'Hot sauce', 'Sausage gravy'],
-  ['Fried Deviled Eggs are finished with:', 'Egg mousse and paprika', 'Bacon and chives', 'Pimento cheese', 'Hot honey'],
-  ['Pimento Cheese Potato Skins come with:', 'Crispy bacon and sliced scallions', 'Chili and sour cream', 'Spinach and artichoke', 'Cheddar and jalapenos'],
-  ['How much are the Pimento Cheese Potato Skins?', '9', '11', '12', '14'],
-  ['The Margherita pizza is topped with:', 'Sun dried tomato, basil, fresh mozzarella', 'Pepperoni and mozzarella', 'Grilled chicken and ranch', 'BBQ chicken and red onion'],
-  ['How much is the Margherita pizza?', '13', '11', '16', '19'],
-  ['How much is the Classic Cheese pizza?', '11', '13', '9', '16'],
-  ['The BBQ Chicken Pizza includes:', 'Grilled chicken, house BBQ, red onion, mozzarella', 'Fried chicken, ranch, bacon', 'Pulled pork and slaw', 'Chicken, pineapple, ham'],
-  ['Build Your Own Pizza comes with up to how many toppings?', 'Three', 'Two', 'Four', 'Five'],
-  ['Each Build Your Own topping costs:', '2', '1', '3', '1.50'],
-  ['Build Your Own with pepperoni, sausage and mushrooms costs:', '17', '15', '13', '19'],
-  ['Which is NOT a Build Your Own topping?', 'Pineapple', 'Peppadew peppers', 'Sauteed onions', 'Bacon'],
-  ['The Chicken Wings come by:', 'The dozen', 'The half dozen', 'Eight', 'Ten'],
-  ['How much are the Chicken Wings?', '19', '14', '16', '12'],
-  ['Which is NOT a wing sauce?', 'Teriyaki', 'Mango Habanero', 'Lemon Pepper', 'BBQ'],
-  ['Bang Bang Shrimp is:', 'Golden fried shrimp tossed in bang bang sauce', 'Grilled shrimp over rice', 'Shrimp tacos with slaw', 'Shrimp and grits'],
-  ['How much is the Bang Bang Shrimp?', '12', '14', '10', '19'],
-  ['The Shrimp or Chicken Stack includes:', 'Rice, avocado, tomatoes, teriyaki and sriracha aioli', 'Mashed potato and gravy', 'Slaw and hushpuppies', 'Waffle and maple syrup'],
-  ['How much is the Shrimp or Chicken Stack?', '14', '12', '16', '19'],
-  ['The Carolina BLT is served on:', 'Texas toast', 'A brioche bun', 'A croissant', 'Sourdough'],
-  ['Which spread is on the Carolina BLT?', 'Garlic aioli', 'Chipotle mayo', 'Comeback sauce', 'Sriracha aioli'],
-  ['Adding pimento cheese to the BLT costs:', '2', '1', '3', '50 cents'],
-  ['How many Chicken Tenders come in an order?', 'Five', 'Four', 'Six', 'Three'],
-  ['The Carolina Club sandwich has:', 'Turkey, ham, bacon, tomato, lettuce, chipotle mayo', 'Turkey, bacon, provolone, comeback sauce', 'Fried chicken finger and cheddar', 'Roast beef and horseradish'],
-  ['Which sauce is on the Turkey Melt?', 'Comeback sauce', 'Chipotle mayo', 'Garlic aioli', 'Sriracha aioli'],
-  ['Which cheese is on the Turkey Melt?', 'Provolone', 'Swiss', 'Cheddar', 'Pepper jack'],
-  ['How many shrimp are on the Shrimp Po Boy?', 'Four large', 'Six', 'Three', 'A dozen'],
-  ['Which sandwich uses sriracha aioli?', 'Shrimp Po Boy', 'Carolina Club', 'Turkey Melt', 'Carolina BLT'],
-  ['The Mahi Tacos come with:', 'Slaw, pico and sriracha aioli', 'Lettuce and sour cream', 'Mango salsa and lime crema', 'Black beans and rice'],
-  ['The Carolina Burger patty is:', '7 oz Black Angus', '8 oz wagyu', '6 oz chuck', 'Half pound sirloin'],
-  ['The Carolina Burger bun is:', 'Toasted brioche', 'Texas toast', 'Pretzel', 'Sesame'],
-  ['Each "Kick It Up" burger add-on costs:', '1', '2', '1.50', '3'],
-  ['Which is NOT a "Kick It Up" add-on?', 'Pimento cheese', 'Bacon', 'Egg', 'Avocado'],
-  ['How much is the Carolina Burger?', '14', '12', '16', '19'],
-  ['The Carolina Burger with bacon and avocado costs:', '16', '14', '18', '15'],
-  ['The All American Dog is a:', 'Nathan\'s all beef frank', 'Hebrew National frank', 'House made sausage', 'Turkey dog'],
-  ['Adding chili or slaw to the dog costs:', '2', '1', '3', 'Nothing'],
-  ['How much is the All American Dog?', '7', '9', '10', '5'],
-  ['The CCC Bird Dog is:', 'A fried chicken finger with bacon, lettuce, tomato, cheddar, chipotle mayo', 'An all beef frank with chili', 'A turkey melt in a hot dog bun', 'A shrimp roll'],
-  ['House Pimento Cheese is served with:', 'Lavash or pita points', 'Crostini', 'Tortilla chips', 'Saltine crackers'],
-  ['Chicken Salad and Egg Salad are priced:', '10 chicken, 8 egg', '8 chicken, 10 egg', '10 each', '12 chicken, 9 egg'],
-  ['Chicken or Egg Salad can also be ordered as:', 'A sandwich or wrap', 'A pizza', 'A flatbread', 'A soup'],
-  ['Adding grilled salmon to a salad costs:', '15', '10', '7', '12'],
-  ['Adding shrimp to a salad costs:', '10', '7', '15', '6'],
-  ['Adding grilled or fried chicken to a salad costs:', '7', '10', '6', '5'],
-  ['The Summer Spinach Salad has:', 'Strawberries, blueberries, feta, almond slivers, poppyseed vinaigrette', 'Bacon, egg and warm bacon dressing', 'Goat cheese, pecans and balsamic', 'Blue cheese and walnuts'],
-  ['Which salad contains nuts?', 'Summer Spinach', 'Thunderbird', 'Caesar', 'House'],
-  ['Which cheese is on the Thunderbird Salad?', 'Swiss', 'Feta', 'Bleu cheese', 'Cheddar'],
-  ['The Caesar Salad is priced:', '5 small, 9 large', '6 small, 10 large', '7 small, 10 large', '4 small, 8 large'],
-  ['The House Salad is priced:', '6 small, 10 large', '5 small, 9 large', '7 small, 10 large', '8 small, 12 large'],
-  ['Which is NOT a lunch side?', 'Mashed potato', 'House chips', 'Fresh fruit', 'Cole slaw'],
-  ['Which side is on BOTH the lunch and dinner menus?', 'Sweet chili Brussels sprouts', 'Risotto', 'House chips', 'Haricots verts'],
-  ['Which is NOT a dinner side?', 'Shoestring fries', 'Glazed rainbow carrots', 'Risotto', 'Haricots verts'],
-  ['What is the starter section called on the dinner menu?', 'To Share', 'Small Plates', 'First Course', 'Appetizers'],
-  ['The Yellowfin Tuna "Olivia" comes with:', 'Shaved teriyaki Brussels sprouts, sesame chimichurri, citrus vinaigrette', 'Coconut rice and mango salsa', 'Mashed potato and green beans', 'Risotto and asparagus'],
-  ['How much is the Tuna "Olivia"?', '29', '37', '24', '39'],
-  ['Which of these mains is vegetarian as written?', 'Crispy Eggplant "Caprese"', 'Carolina Cordon Bleu', 'Braised Short Rib', 'NC Mountain Trout'],
-  ['The Crispy Eggplant "Caprese" is served over:', 'Angel hair pasta', 'Linguini', 'Rice', 'Mashed potato'],
-  ['How much is the Crispy Eggplant "Caprese"?', '18', '24', '20', '14'],
-  ['The Three Cheese Ravioli comes with:', 'Garlic tomato sauce, basil pesto, shaved Parmesan', 'Alfredo and peas', 'Vodka sauce', 'Brown butter and sage'],
-  ['How much is the Three Cheese Ravioli?', '24', '18', '20', '28'],
-  ['Create Your Own Pasta: which pastas can members choose?', 'Penne or linguini', 'Rigatoni or penne', 'Spaghetti or fettuccine', 'Angel hair or linguini'],
-  ['Create Your Own Pasta: which sauces are offered?', 'Alfredo, piccata, marinara', 'Vodka, Alfredo, pesto', 'Marinara, Bolognese, Alfredo', 'Pesto, piccata, carbonara'],
-  ['The base price of Create Your Own Pasta is:', '20', '18', '24', '22'],
-  ['Linguini piccata with shrimp costs:', '30', '27', '26', '20'],
-  ['Penne Alfredo with chicken costs:', '27', '30', '26', '24'],
-  ['Adding veggies to Create Your Own Pasta costs:', '6', '7', '5', '10'],
-  ['The Braised BBQ Beef Short Rib is served with:', 'Roasted garlic mashed potato, crispy onions, choice of side', 'Risotto only', 'Cheese grits', 'Baked beans and slaw'],
-  ['How much is the Short Rib?', '28', '24', '29', '37'],
-  ['The Carolina Cordon Bleu is served with:', 'Bechamel sauce', 'Lemon beurre blanc', 'Red wine demi', 'Piccata sauce'],
-  ['How much is the Carolina Cordon Bleu?', '24', '28', '20', '29'],
-  ['How big is the Filet "Diane"?', 'Half pound', '6 oz', '12 oz', 'Twin 4 oz medallions'],
-  ['The Diane sauce is made with:', 'Garlic, shallot, mushroom and cognac, finished with cream', 'Green peppercorn', 'Red wine demi glace', 'Bearnaise'],
-  ['How much is the Filet "Diane"?', '39', '37', '35', '42'],
-  ['The NC Mountain Trout is finished with:', 'Brown butter almondine sauce', 'Lemon beurre blanc', 'Bechamel', 'Sesame chimichurri'],
-  ['How is the Chilean Sea Bass prepared?', 'Potato crusted', 'Pesto crusted', 'Blackened', 'Parmesan crusted'],
-  ['The Chilean Sea Bass sauce is:', 'Lemon beurre blanc', 'Brown butter almondine', 'Citrus vinaigrette', 'Mango salsa'],
-  ['How much is the Chilean Sea Bass?', '37', '35', '39', '29'],
-  ['Which dinner main contains almonds?', 'NC Mountain Trout', 'Chilean Sea Bass', 'Carolina Cordon Bleu', 'Short Rib'],
-  ['Which dinner main has a sauce made with cognac?', 'Filet "Diane"', 'Short Rib', 'Tuna "Olivia"', 'Cordon Bleu'],
-  ['The Black and Blue Wedge is topped with:', 'Blackened hanger steak', 'Grilled chicken', 'Fried shrimp', 'Grilled salmon'],
-  ['How much is the Black and Blue Wedge?', '19', '11', '16', '14'],
-  ['Which dinner item carries the raw or undercooked asterisk?', 'Filet "Diane"', 'Crispy Eggplant "Caprese"', 'Three Cheese Ravioli', 'Create Your Own Pasta'],
-  ['Which lunch item does NOT carry the asterisk?', 'Margherita Pizza', 'Chicken Wings', 'Carolina Burger', 'Mahi Tacos'],
-  ['A member at dinner wants a meatless burger. You say:', 'A veggie burger is available', 'We do not have one', 'Only at lunch', 'Order the eggplant instead'],
-  ['Which pizza has ranch?', 'Bacon, Chicken and Ranch', 'BBQ Chicken', 'Margherita', 'Classic Cheese'],
-  ['How much is the Bacon, Chicken and Ranch pizza?', '16', '13', '11', '19'],
-  ['Where do Peppadew peppers appear on the menu?', 'As a Build Your Own pizza topping', 'On the Bird Dog', 'In the Thunderbird Salad', 'On the Mahi Tacos'],
-  ['Glazed rainbow carrots are a side on the:', 'Dinner menu', 'Lunch menu', 'Both menus', 'Pool menu'],
-  ['The menu advisory says raw or undercooked foods may:', 'Increase your risk of foodborne illness', 'Contain allergens', 'Take longer to cook', 'Cost more'],
-  ['Which sandwich comes with chipotle mayo?', 'Carolina Club', 'Turkey Melt', 'Carolina BLT', 'Shrimp Po Boy']
-];
 
 /* ==========================================================================
    FIRST TEE : Your First Shift at The Carolina  (Akash Garg)
@@ -1372,9 +1274,9 @@ const CHASE = [
       '<h3>Controls</h3><ul><li><b>Walk:</b> arrow keys or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>, or click or tap where you want to go.</li><li><b>Talk or use:</b> <kbd>Space</kbd>, <kbd>Enter</kbd> or <kbd>E</kbd>. On a phone, tap <b>TALK</b> and use the round pad to walk.</li><li><b>Answer:</b> click an answer, or press <kbd>1</kbd> to <kbd>4</kbd>.</li><li><b>Menu Book:</b> <kbd>B</kbd>. <b>Shifts list:</b> <kbd>M</kbd>. <b>Close a window:</b> <kbd>Esc</kbd>.</li></ul>' +
       '<h3>Your training week (Server)</h3><p>Four shifts: <b>Lunch Basics</b>, <b>Lunch Rush</b>, <b>Dinner Service</b> and <b>The Tough Table</b>. Each shift walks you through the clubhouse: clock in, a huddle with your manager, tables of members, ringing tickets in at the kitchen pass, side work, and clocking out. Other jobs have a short preview for now.</p>' +
       '<h3>Answers, feedback and must-pass moments</h3><ul><li>Every wrong answer explains <b>why it is tempting</b> and what to do instead.</li><li><span class="must" style="margin:0">Must-pass</span> moments (allergies, carding, spills, over-serving) must be answered correctly before you move on.</li><li>Checklists: tap every task that belongs, then check your list.</li><li>Tickets: select every line the member ordered, then send it to the kitchen.</li><li>Your <b>first try</b> on each question is what counts on your scorecard.</li></ul>' +
-      '<h3>The Menu Chase</h3><p>A quiz show against the Chef, built from the real lunch and dinner menus. First, the <b>Tip Builder</b>: 60 seconds of quick menu questions, $50 in tips for each right answer. Then choose where to start on the board and race the Chef to <b>the pass</b>. Answer right to move down a step; if the Chef catches you, try again. Play it any time from <b>Menu Chase</b> on the title screen.</p>' +
+      '<h3>The Menu Chase</h3><p>A chase quiz show built from the real lunch and dinner menus: 101 questions, every one with a rationale. Pick a rival and race through the club: <b>The Table Hopper</b> (starters and salads), <b>The Tee Time Terror</b> (pizzas, wings and lunch favorites), <b>The Sauce Boss</b> (dinner mains and pasta) and <b>Last Call</b> (hours, safety and service). Right answers sprint you ahead; wrong ones let your rival gain. Streaks earn lifelines: 50:50, Freeze and Slow-Mo. Beat the rounds and the review chases, then outrun <b>the Head Chef</b>. There is also a Daily Challenge, a Service Sprint, a Menu Lab and rival cards to print. Open it from <b>Menu Chase</b> on the title screen, or from the Chef at the kitchen pass; <b>Back to First Tee</b> returns you to the clubhouse. Winning any chase counts toward your certificate.</p>' +
       '<h3>Menu Book</h3><p>The <b>Menu</b> button in the top bar opens the lunch and dinner menus and the hours, with a printable quick reference sheet.</p>' +
-      '<h3>Certificate</h3><p>Finish all four shifts and beat the Chef, then visit the <b>manager\'s desk</b> to print your certificate for your manager to sign.</p>' +
+      '<h3>Certificate</h3><p>Finish all four shifts and win a round of the Menu Chase, then visit the <b>manager\'s desk</b> to print your certificate for your manager to sign.</p>' +
       '<h3>Saving</h3><p>Progress saves on this device automatically. Use <b>Continue</b> on the title screen to pick up where you left off, or a <b>save code</b> to move to another device.</p>' +
       '<h3>Modes</h3><ul><li><b>Full Training:</b> shifts unlock in order.</li><li><b>Practice Mode:</b> every shift and the Menu Chase are open.</li><li><b>Manager Demo:</b> managers enter the club code to open everything and preview the certificate.</li></ul>' +
       '<div class="prow"><span></span><button class="btn green primary" id="pOk">Got it</button></div></div>');
@@ -1388,70 +1290,21 @@ const CHASE = [
     printSheet('<div class="cw">' + (demo ? '<div class="wm">DEMO</div>' : '') + '<div style="font:800 12px Nunito;letter-spacing:.2em;text-transform:uppercase">The Carolina Country Club</div><h1>Certificate of Training</h1><h2>First Tee: Your First Shift at The Carolina</h2><div>This certifies that</div><div class="nm">' + esc(G.name || 'New hire') + '</div><div>completed the <b>' + esc(ROLES[G.role].label) + '</b> training path on ' + d + '.</div><table><tr><th>Training</th><th>First-try score</th></tr>' + rows + '</table><div class="sig"><div>Trainee</div><div>Manager</div><div>Date</div></div><div style="margin-top:18px;font:600 11px Nunito;color:#6c6a5e">Built by Dr. Akash Garg &middot; Dr. Garg Learning</div></div>');
   }
 
-  /* ---------------- MENU CHASE ---------------- */
+  /* ---------------- MENU CHASE (Chase engine v5, its own file beside this one) ---------------- */
   const CH = {};
+  function chaseWon() { try { const h = JSON.parse(localStorage.getItem('c5_ccc_hist') || '[]'); return Array.isArray(h) && h.some(r => r && r.won); } catch (e) { return false; } }
+  function syncChase() { if (G && !G._temp && chaseWon() && !G.chase.won) { G.chase.won = true; persist(); } }
   function openChase() {
-    closePanel(); for (const q in keys) keys[q] = false; panelOpener = document.activeElement;
-    CH.token = (CH.token || 0) + 1; CH.pool = shuffle(CHASE); CH.qi = 0; CH.tips = 0; CH.phase = 'intro';
-    $('chase').classList.add('show'); music('chase'); chaseIntro();
+    closePanel(); closeDlg(); for (const q in keys) keys[q] = false; panelOpener = document.activeElement; stopMusic();
+    const c = $('chase'); c.innerHTML = '<iframe id="chFrame" src="menu-chase.html" title="The Menu Chase" allow="autoplay; fullscreen"></iframe><button class="chClose" id="chX">&larr; Back to First Tee</button>';
+    c.classList.add('show'); $('chX').onclick = closeChase;
+    setTimeout(() => { try { $('chFrame').focus(); } catch (e) { } }, 300);
   }
-  function closeChase() { CH.token++; clearInterval(CH.timer); $('chase').classList.remove('show'); $('chase').innerHTML = ''; if ($('titleS').classList.contains('active')) { stopMusic(); if (G && G._temp) G = null; refreshTitle(); try { $('bChase').focus(); } catch (e) { } return; } music('club'); try { if (panelOpener) { panelOpener.focus(); panelOpener.blur(); } } catch (e) { } hud(); }
-  function chTop(sub) { return '<div class="chTop"><h2 class="px">MENU CHASE</h2><span style="font:800 14px Nunito;color:#cfe0d4">' + sub + '</span><button class="btn sm ghost" id="chX">Leave the Chase</button></div>'; }
-  function chBind() { $('chX').onclick = closeChase; const f = $('chase').querySelector('.primary') || $('chase').querySelector('.opt'); if (f) setTimeout(() => { try { f.focus(); } catch (e) { } }, 30); }
-  function nextQ() { if (CH.qi >= CH.pool.length) { CH.pool = shuffle(CHASE); CH.qi = 0; } return CH.pool[CH.qi++]; }
-  function chaseIntro() {
-    $('chase').innerHTML = '<div class="chw">' + chTop('Built from the real June 2026 menus') + '<div class="chFaces" style="margin-top:24px"><div class="chFace"><img src="' + portrait(lookKey(), true) + '" alt="">' + esc(G.name || 'You') + '</div><div class="chMsg" style="margin:0 10px 40px">VS</div><div class="chFace"><img src="' + portrait('chef', true) + '" alt="">' + phx(CLUB.chef) + '</div></div>' +
-      '<div class="chQ" style="margin-top:18px"><h3 style="margin:0 0 8px">How it works</h3><ol><li><b>Tip Builder:</b> 60 seconds of menu questions. Every right answer adds $50 in tips.</li><li><b>The Chase:</b> choose where to start on the board. The Chef starts at the top and answers too. Reach <b>the pass</b> before the Chef catches you.</li></ol><p>Keys 1 to 4 answer. The Chef knows the menu very well.</p><div class="prow"><span></span><button class="btn gold primary" id="chGo">Start the Tip Builder</button></div></div></div>';
-    chBind(); $('chGo').onclick = tipBuilder;
-  }
-  function tipBuilder() {
-    CH.phase = 'tips'; CH.left = 60; const tok = CH.token; clearInterval(CH.timer);
-    CH.timer = setInterval(() => { if (tok !== CH.token) return clearInterval(CH.timer); CH.left--; const b = $('chT'); if (b) b.style.width = (CH.left / 60 * 100) + '%'; const l = $('chL'); if (l) l.textContent = CH.left + 's'; if (CH.left <= 10 && CH.left > 0) sfx.tick(); if (CH.left <= 0) { clearInterval(CH.timer); offers(); } }, 1000);
-    tipQ();
-  }
-  function tipQ() {
-    const q = nextQ(); const opts = shuffle(q.slice(1)); const tok = CH.token;
-    $('chase').innerHTML = '<div class="chw">' + chTop('Tip Builder') + '<div class="chQ" style="margin-top:14px"><div class="chBar"><i id="chT" style="width:' + (CH.left / 60 * 100) + '%"></i></div><div style="display:flex;justify-content:space-between;font:900 14px Nunito"><span>Tips: $' + CH.tips + '</span><span id="chL">' + CH.left + 's</span></div><div class="qtext">' + esc(q[0]) + '</div><div class="opts">' + opts.map((o, j) => '<button class="opt" data-j="' + j + '"><b>' + (j + 1) + '</b><span>' + esc(o) + '</span></button>').join('') + '</div></div></div>';
-    chBind();
-    const pick = (j) => { if (tok !== CH.token || CH.phase !== 'tips') return; const ok = opts[j] === q[1]; const bs = $('chase').querySelectorAll('.opt'); bs.forEach((b, i) => { b.disabled = true; if (opts[i] === q[1]) b.classList.add('ok'); else if (i === j) b.classList.add('no'); }); if (ok) { CH.tips += 50; sfx.ok(); } else sfx.no(); setTimeout(() => { if (tok === CH.token && CH.phase === 'tips' && CH.left > 0) tipQ(); }, ok ? 450 : 1100); };
-    $('chase').querySelectorAll('.opt').forEach(b => b.onclick = () => pick(+b.dataset.j)); CH.pick = pick; CH.n = 4;
-  }
-  function offers() {
-    CH.phase = 'offer'; const t = CH.tips; const hi = Math.max(200, t * 3), lo = Math.max(0, Math.round(t / 3 / 10) * 10);
-    $('chase').innerHTML = '<div class="chw">' + chTop('Choose your starting spot') + '<div class="chQ" style="margin-top:14px"><p>You built <b>$' + t + '</b> in tips. The Chef makes you an offer. The closer you start to the Chef, the more you take home, and the riskier it gets.</p><div class="offers" style="margin-top:10px">' +
-      [[1, hi, 'High offer: start one step from the Chef'], [2, t, 'Your tips: start two steps ahead'], [3, lo, 'Low offer: start three steps ahead']].map(([p, v, l]) => '<button class="offer opt" data-p="' + p + '" style="color:var(--ink);background:#fff"><b>$' + v + '</b><span>' + l + '</span></button>').join('') + '</div></div></div>';
-    chBind(); $('chase').querySelectorAll('.offer').forEach(b => b.onclick = () => { CH.start = +b.dataset.p; CH.prize = [0, hi, t, lo][CH.start]; chaseRun(); });
-  }
-  const HOME = 8;
-  function ladder() {
-    let h = ''; for (let r = 0; r <= HOME; r++) {
-      const pl = CH.pp === r, ch = CH.cp === r; const cls = r === HOME ? 'home' : pl && ch ? 'both' : pl ? 'pl' : ch ? 'ch' : '';
-      h += '<div class="rung ' + cls + '">' + (ch ? '<img src="' + portrait('chef', true) + '" alt="Chef">' : '') + (pl ? '<img src="' + portrait(lookKey(), true) + '" alt="You">' : '') + (r === HOME ? 'THE PASS' : (!pl && !ch ? '' : '')) + '</div>';
-    } return '<div class="ladder" aria-label="Board: you are on step ' + CH.pp + ', the Chef is on step ' + CH.cp + ', the pass is step ' + HOME + '">' + h + '</div>';
-  }
-  function chaseRun() { CH.phase = 'chase'; CH.pp = CH.start; CH.cp = 0; chaseQ(); }
-  function chaseQ(reveal) {
-    const tok = CH.token;
-    if (!reveal) { const q = nextQ(); CH.q = q; CH.opts = shuffle(q.slice(1, 4)); if (!CH.opts.includes(q[1])) CH.opts[0] = q[1]; CH.opts = shuffle(CH.opts); }
-    const q = CH.q, opts = CH.opts;
-    let body = '<div class="qtext">' + esc(q[0]) + '</div><div class="opts">' + opts.map((o, j) => { let cls = ''; if (reveal) { if (o === q[1]) cls = 'ok'; else if (j === reveal.p) cls = 'no'; } return '<button class="opt ' + cls + '" data-j="' + j + '"' + (reveal ? ' disabled' : '') + '><b>' + (j + 1) + '</b><span>' + esc(o) + '</span>' + (reveal && j === reveal.p ? '<span class="bub ' + (reveal.pok ? 'ok' : 'no') + '" style="margin-left:auto;color:#fff">You</span>' : '') + (reveal && j === reveal.c ? '<span class="bub ' + (reveal.cok ? 'ok' : 'no') + '" style="margin-left:' + (j === reveal.p ? '6px' : 'auto') + ';color:#fff">Chef</span>' : '') + '</button>'; }).join('') + '</div>';
-    if (reveal) body += '<div class="prow"><span class="qn">' + (reveal.pok ? 'You move one step.' : 'You stay put.') + ' ' + (reveal.cok ? 'The Chef moves one step.' : 'The Chef missed.') + '</span><button class="btn green primary" id="chN">Next</button></div>';
-    $('chase').innerHTML = '<div class="chw">' + chTop('Playing for $' + CH.prize) + '<div class="chGrid"><div class="chQ">' + body + '</div>' + ladder() + '</div></div>';
-    chBind();
-    if (reveal) { $('chN').onclick = () => { if (tok !== CH.token) return; if (CH.cp >= CH.pp) return chaseEnd(false); if (CH.pp >= HOME) return chaseEnd(true); chaseQ(); }; return; }
-    const pick = (j) => {
-      if (tok !== CH.token || CH.phase !== 'chase') return; CH.phase = 'wait';
-      const pok = opts[j] === q[1]; const cok = Math.random() < 0.72; let c = opts.indexOf(q[1]); if (!cok) { const w = opts.map((o, i) => i).filter(i => opts[i] !== q[1]); c = w[Math.floor(Math.random() * w.length)]; }
-      pok ? sfx.ok() : sfx.no();
-      setTimeout(() => { if (tok !== CH.token) return; if (pok) CH.pp++; if (cok) CH.cp++; CH.phase = 'chase'; chaseQ({ p: j, pok, c, cok }); }, 500);
-    };
-    $('chase').querySelectorAll('.opt').forEach(b => b.onclick = () => pick(+b.dataset.j)); CH.pick = pick; CH.n = 3;
-  }
-  function chaseEnd(won) {
-    CH.phase = 'end'; const steps = CH.pp - CH.start; G.chase.best = Math.max(G.chase.best || 0, steps); if (won) G.chase.won = true; persist();
-    won ? sfx.win() : sfx.lose();
-    $('chase').innerHTML = '<div class="chw">' + chTop(won ? 'You made it' : 'Caught') + '<div class="chQ" style="margin-top:14px;text-align:center"><div class="chMsg" style="color:var(--g2)">' + (won ? 'YOU BEAT THE CHEF' : 'THE CHEF CAUGHT YOU') + '</div><p>' + (won ? 'You reached the pass with <b>$' + CH.prize + '</b> in tips. ' + (G.role === 'server' && allShiftsDone() && !G._temp ? 'Head to the manager\'s desk for your certificate.' : '') : 'Brush up in the Menu Book and try again. Every round uses fresh questions.') + '</p><div class="prow" style="justify-content:center"><button class="btn" id="chBook">Open the Menu Book</button><button class="btn gold primary" id="chAgain">' + (won ? 'Play again' : 'Try again') + '</button><button class="btn green" id="chDone">' + ($('titleS').classList.contains('active') ? 'Back to the title screen' : 'Back to the clubhouse') + '</button></div></div></div>';
-    chBind(); $('chAgain').onclick = () => { CH.token++; CH.tips = 0; chaseIntro(); }; $('chDone').onclick = closeChase; $('chBook').onclick = () => { closeChase(); if (!$('titleS').classList.contains('active')) openMenuBook('lunch'); else openTitleMenu(); };
+  function closeChase() {
+    const c = $('chase'); c.classList.remove('show'); c.innerHTML = ''; syncChase();
+    if ($('titleS').classList.contains('active')) { if (G && G._temp) G = null; refreshTitle(); try { $('bChase').focus(); } catch (e) { } return; }
+    music('club'); try { if (panelOpener) { panelOpener.focus(); panelOpener.blur(); } } catch (e) { } hud();
+    if (G && G.chase.won && G.role === 'server' && allShiftsDone()) banner('Menu Chase complete', 'Head to the manager\'s desk');
   }
 
   /* ---------------- HUD ---------------- */
@@ -1588,10 +1441,7 @@ const CHASE = [
       return;
     }
     if (e.key === 'Tab' && panelOpen()) { trapTab(e); return; }
-    if ($('chase').classList.contains('show')) {
-      if (/^[1-4]$/.test(kk) && !e.repeat && CH.pick && (CH.phase === 'tips' || CH.phase === 'chase')) { const j = +kk - 1; if (j < CH.n) { CH.pick(j); e.preventDefault(); } }
-      return;
-    }
+    if ($('chase').classList.contains('show')) return;
     if ($('panel').classList.contains('show')) {
       const tag = (document.activeElement && document.activeElement.tagName) || '';
       if (tag !== 'INPUT' && /^[1-9]$/.test(kk) && !e.repeat) { const b = $('panel').querySelectorAll('.opt:not([disabled])'); const all = $('panel').querySelectorAll('.opt'); const j = +kk - 1; if (all[j] && !all[j].disabled && b.length) { all[j].click(); e.preventDefault(); } }
@@ -1669,7 +1519,7 @@ const CHASE = [
     if (changing) stepRole(); else stepName();
   }
   function enterGame() {
-    show('gameS'); resize(); if (!S.map) S.map = buildClub(); placeMembers();
+    syncChase(); show('gameS'); resize(); if (!S.map) S.map = buildClub(); placeMembers();
     if (!S.player) S.player = new Player(S.map, lookKey(), S.map.spawn[0], S.map.spawn[1], 3); setLook();
     snapCam(); S.fade = 1; S.fadeDir = -1; hud(); startLoop(); music('club');
     if (!G.met) { G.met = true; persist(); setTimeout(() => { if (!inGame() || panelOpen()) return; say([{ ch: 'mentor', name: PH, text: 'Welcome to The Carolina, ' + G.name + '. Follow the gold arrow. Your first stop is the time clock right here in the staff room.' }, { name: 'How to play', text: 'Walk with the arrow keys or WASD, or tap where you want to go. Press Space or tap TALK to use things. The Menu Book is always in the top bar.' }]); }, 800); }
@@ -1686,6 +1536,7 @@ const CHASE = [
     $('bMore').onclick = openMore;
     $('bHow').onclick = () => openHowTo('title');
     $('bChase').onclick = () => { const s0 = store.get(); if (s0) G = s0; else G = Object.assign(newGame({ name: 'Guest', role: 'server', mode: 'practice' }), { _temp: true }); openChase(); };
+    window.addEventListener('storage', syncChase);
     window.addEventListener('resize', () => { if (inGame()) { resize(); snapCam(); } });
     IMG.onload = () => { if (!tRaf) titleLoop(); }; if (IMG.complete) titleLoop();
     setTimeout(() => { try { ($('bCont').hidden ? $('bStart') : $('bCont')).focus(); } catch (e) { } }, 60);

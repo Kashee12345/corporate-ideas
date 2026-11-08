@@ -8,7 +8,7 @@ Live site: https://kashee12345.github.io/corporate-ideas/
 
 | Project | What it is | Play |
 |---|---|---|
-| **First Tee: Your First Shift at The Carolina** | New hire training game for The Carolina Country Club (proposal build). Walk a pixel clubhouse, work four server shifts built from the club's posted June 2026 menus, beat the chef in the Menu Chase, and print a certificate. Previews for bartender, banquet, front desk, pool and pro shop roles. | [carolina-country-club/](https://kashee12345.github.io/corporate-ideas/carolina-country-club/) |
+| **First Tee: Your First Shift at The Carolina** | New hire training game for The Carolina Country Club (proposal build). Walk a pixel clubhouse, work four server shifts built from the club's posted June 2026 menus, race four rivals and the Head Chef in the Menu Chase (101 menu questions on the Chase v5 engine), and print a certificate. Previews for bartender, banquet, front desk, pool and pro shop roles. | [carolina-country-club/](https://kashee12345.github.io/corporate-ideas/carolina-country-club/) |
 
 Each game is a single HTML file that runs in any browser, on a computer or a phone, with no install or account.
 
