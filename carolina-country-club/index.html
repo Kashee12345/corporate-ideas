@@ -24,7 +24,7 @@ button{font:inherit;cursor:pointer}
 .tTitle{font-size:clamp(34px,8vw,62px);color:var(--gold2);text-shadow:0 4px 0 #6b4f1a,0 8px 0 rgba(0,0,0,.35);margin:0}
 .tSub{font-size:clamp(22px,4.6vw,32px);margin:14px 0 4px;font-style:italic;color:#fff}
 .tClub{font:700 14px Nunito;color:#d9e6dc;margin-bottom:22px}
-.tBtns{display:grid;gap:10px;width:min(340px,100%);margin:0 auto}
+.tBtns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:min(400px,100%);margin:0 auto}.tBtns .gold,.tBtns #bCont,.tBtns #bMore,.tBtns #bPractice{grid-column:1/-1}
 .btn{border:0;border-radius:12px;padding:13px 18px;font-weight:900;font-size:16px;background:var(--paper);color:var(--g1);box-shadow:0 4px 0 #b9ab88}
 .btn:hover{filter:brightness(1.04)}.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #b9ab88}
 .btn.gold{background:linear-gradient(#ecd28a,#c9a24a);color:#2a2008;box-shadow:0 4px 0 #7d6220}
@@ -101,6 +101,7 @@ button{font:inherit;cursor:pointer}
 .tog.r-ok{border-color:var(--ok);background:#ecf7f0}.tog.r-no{border-color:var(--red);background:#fbeceb}.tog.r-miss{border-color:var(--warn);background:#fdf3df}
 .why{display:block;font:600 13px/1.4 Nunito;color:#5b5648;margin-top:4px}
 .tb{border-collapse:collapse;width:100%;margin:6px 0 10px}.tb td{padding:6px 8px;border-bottom:1px solid var(--line)}.tb td:last-child{text-align:right;font-weight:800}
+.how h3{font:700 21px "Cormorant Garamond",Georgia,serif;color:var(--g1);margin:16px 0 6px}.how h3:first-child{margin-top:0}.how kbd{display:inline-block;min-width:22px;text-align:center;font:800 12px Nunito;background:#f0e7d2;border:1px solid #d9cba8;border-bottom-width:2px;border-radius:5px;padding:1px 6px;margin:0 1px}
 .ticket{background:#fff;border:1px dashed #b9ab88;border-radius:10px;padding:10px 12px;font:700 15px/1.45 "Courier New",monospace;margin-bottom:12px}
 /* cards */
 .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -185,6 +186,8 @@ button{font:inherit;cursor:pointer}
     <div class="tBtns">
       <button class="btn gold" id="bStart">Start Training</button>
       <button class="btn" id="bCont" hidden>Continue</button>
+      <button class="btn ghost" id="bChase">Menu Chase</button>
+      <button class="btn ghost" id="bHow">How to Play</button>
       <button class="btn ghost" id="bPractice">Practice Mode</button>
       <button class="btn ghost" id="bMore">Manager Demo, Save Codes and Credits</button>
     </div>
@@ -792,7 +795,7 @@ const CHASE = [
   };
   let G = null; // game save state
   function newGame(o) { return Object.assign({ v: 1, name: '', role: 'server', sub: null, look: 0, mode: 'full', done: {}, scores: {}, chase: { won: false, best: 0 }, started: Date.now() }, o || {}); }
-  function persist() { if (G) store.set(G); }
+  function persist() { if (G && !G._temp) store.set(G); }
 
   /* ---------------- audio ---------------- */
   let muted = false; try { muted = localStorage.getItem('firsttee_mute') === '1'; } catch (e) { }
@@ -1361,6 +1364,22 @@ const CHASE = [
     $('pLd').onclick = () => { try { const o = JSON.parse(decodeURIComponent(escape(atob($('pLoad').value.trim())))); if (!o || !o.role || !ROLES[o.role]) throw 0; G = newGame(o); persist(); sfx.ok(); closePanel(); refreshTitle(); if (S.map && $('gameS').classList.contains('active')) { S.run = null; placeMembers(); setLook(); hud(); } } catch (e) { sfx.no(); $('pLoad').value = ''; $('pLoad').placeholder = 'That code did not work. Try again.'; } };
     $('pReset').onclick = () => { store.clear(); G = null; closePanel(); refreshTitle(); toTitle(); };
   }
+
+  function openTitleMenu() { openMenuBook('lunch'); }
+  function openHowTo(from) {
+    openPanel(head('First Tee', 'How to play') + '<div class="pb how">' +
+      '<h3>Getting started</h3><ol><li>Click <b>Start Training</b>, type your name and choose your job: Server, Bartender, Banquet and Events, or Member Services.</li><li>Pick your look and clock in. You start in the staff room.</li><li>Follow the <b>gold arrow</b>. The bar at the top of the screen always tells you your next task.</li></ol>' +
+      '<h3>Controls</h3><ul><li><b>Walk:</b> arrow keys or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>, or click or tap where you want to go.</li><li><b>Talk or use:</b> <kbd>Space</kbd>, <kbd>Enter</kbd> or <kbd>E</kbd>. On a phone, tap <b>TALK</b> and use the round pad to walk.</li><li><b>Answer:</b> click an answer, or press <kbd>1</kbd> to <kbd>4</kbd>.</li><li><b>Menu Book:</b> <kbd>B</kbd>. <b>Shifts list:</b> <kbd>M</kbd>. <b>Close a window:</b> <kbd>Esc</kbd>.</li></ul>' +
+      '<h3>Your training week (Server)</h3><p>Four shifts: <b>Lunch Basics</b>, <b>Lunch Rush</b>, <b>Dinner Service</b> and <b>The Tough Table</b>. Each shift walks you through the clubhouse: clock in, a huddle with your manager, tables of members, ringing tickets in at the kitchen pass, side work, and clocking out. Other jobs have a short preview for now.</p>' +
+      '<h3>Answers, feedback and must-pass moments</h3><ul><li>Every wrong answer explains <b>why it is tempting</b> and what to do instead.</li><li><span class="must" style="margin:0">Must-pass</span> moments (allergies, carding, spills, over-serving) must be answered correctly before you move on.</li><li>Checklists: tap every task that belongs, then check your list.</li><li>Tickets: select every line the member ordered, then send it to the kitchen.</li><li>Your <b>first try</b> on each question is what counts on your scorecard.</li></ul>' +
+      '<h3>The Menu Chase</h3><p>A quiz show against the Chef, built from the real lunch and dinner menus. First, the <b>Tip Builder</b>: 60 seconds of quick menu questions, $50 in tips for each right answer. Then choose where to start on the board and race the Chef to <b>the pass</b>. Answer right to move down a step; if the Chef catches you, try again. Play it any time from <b>Menu Chase</b> on the title screen.</p>' +
+      '<h3>Menu Book</h3><p>The <b>Menu</b> button in the top bar opens the lunch and dinner menus and the hours, with a printable quick reference sheet.</p>' +
+      '<h3>Certificate</h3><p>Finish all four shifts and beat the Chef, then visit the <b>manager\'s desk</b> to print your certificate for your manager to sign.</p>' +
+      '<h3>Saving</h3><p>Progress saves on this device automatically. Use <b>Continue</b> on the title screen to pick up where you left off, or a <b>save code</b> to move to another device.</p>' +
+      '<h3>Modes</h3><ul><li><b>Full Training:</b> shifts unlock in order.</li><li><b>Practice Mode:</b> every shift and the Menu Chase are open.</li><li><b>Manager Demo:</b> managers enter the club code to open everything and preview the certificate.</li></ul>' +
+      '<div class="prow"><span></span><button class="btn green primary" id="pOk">Got it</button></div></div>');
+    $('pOk').onclick = closePanel;
+  }
   function printSheet(html) { $('cert').innerHTML = html; window.print(); }
   function printCert() {
     const L = roleSteps(); const demo = G.mode === 'demo' && !pathComplete();
@@ -1376,7 +1395,7 @@ const CHASE = [
     CH.token = (CH.token || 0) + 1; CH.pool = shuffle(CHASE); CH.qi = 0; CH.tips = 0; CH.phase = 'intro';
     $('chase').classList.add('show'); music('chase'); chaseIntro();
   }
-  function closeChase() { CH.token++; clearInterval(CH.timer); $('chase').classList.remove('show'); $('chase').innerHTML = ''; music('club'); try { if (panelOpener) { panelOpener.focus(); panelOpener.blur(); } } catch (e) { } hud(); }
+  function closeChase() { CH.token++; clearInterval(CH.timer); $('chase').classList.remove('show'); $('chase').innerHTML = ''; if ($('titleS').classList.contains('active')) { stopMusic(); if (G && G._temp) G = null; refreshTitle(); try { $('bChase').focus(); } catch (e) { } return; } music('club'); try { if (panelOpener) { panelOpener.focus(); panelOpener.blur(); } } catch (e) { } hud(); }
   function chTop(sub) { return '<div class="chTop"><h2 class="px">MENU CHASE</h2><span style="font:800 14px Nunito;color:#cfe0d4">' + sub + '</span><button class="btn sm ghost" id="chX">Leave the Chase</button></div>'; }
   function chBind() { $('chX').onclick = closeChase; const f = $('chase').querySelector('.primary') || $('chase').querySelector('.opt'); if (f) setTimeout(() => { try { f.focus(); } catch (e) { } }, 30); }
   function nextQ() { if (CH.qi >= CH.pool.length) { CH.pool = shuffle(CHASE); CH.qi = 0; } return CH.pool[CH.qi++]; }
@@ -1431,21 +1450,21 @@ const CHASE = [
   function chaseEnd(won) {
     CH.phase = 'end'; const steps = CH.pp - CH.start; G.chase.best = Math.max(G.chase.best || 0, steps); if (won) G.chase.won = true; persist();
     won ? sfx.win() : sfx.lose();
-    $('chase').innerHTML = '<div class="chw">' + chTop(won ? 'You made it' : 'Caught') + '<div class="chQ" style="margin-top:14px;text-align:center"><div class="chMsg" style="color:var(--g2)">' + (won ? 'YOU BEAT THE CHEF' : 'THE CHEF CAUGHT YOU') + '</div><p>' + (won ? 'You reached the pass with <b>$' + CH.prize + '</b> in tips. ' + (G.role === 'server' && allShiftsDone() ? 'Head to the manager\'s desk for your certificate.' : '') : 'Brush up in the Menu Book and try again. Every round uses fresh questions.') + '</p><div class="prow" style="justify-content:center"><button class="btn" id="chBook">Open the Menu Book</button><button class="btn gold primary" id="chAgain">' + (won ? 'Play again' : 'Try again') + '</button><button class="btn green" id="chDone">Back to the clubhouse</button></div></div></div>';
-    chBind(); $('chAgain').onclick = () => { CH.token++; CH.tips = 0; chaseIntro(); }; $('chDone').onclick = closeChase; $('chBook').onclick = () => { closeChase(); openMenuBook('lunch'); };
+    $('chase').innerHTML = '<div class="chw">' + chTop(won ? 'You made it' : 'Caught') + '<div class="chQ" style="margin-top:14px;text-align:center"><div class="chMsg" style="color:var(--g2)">' + (won ? 'YOU BEAT THE CHEF' : 'THE CHEF CAUGHT YOU') + '</div><p>' + (won ? 'You reached the pass with <b>$' + CH.prize + '</b> in tips. ' + (G.role === 'server' && allShiftsDone() && !G._temp ? 'Head to the manager\'s desk for your certificate.' : '') : 'Brush up in the Menu Book and try again. Every round uses fresh questions.') + '</p><div class="prow" style="justify-content:center"><button class="btn" id="chBook">Open the Menu Book</button><button class="btn gold primary" id="chAgain">' + (won ? 'Play again' : 'Try again') + '</button><button class="btn green" id="chDone">' + ($('titleS').classList.contains('active') ? 'Back to the title screen' : 'Back to the clubhouse') + '</button></div></div></div>';
+    chBind(); $('chAgain').onclick = () => { CH.token++; CH.tips = 0; chaseIntro(); }; $('chDone').onclick = closeChase; $('chBook').onclick = () => { closeChase(); if (!$('titleS').classList.contains('active')) openMenuBook('lunch'); else openTitleMenu(); };
   }
 
   /* ---------------- HUD ---------------- */
-  const ICO = { book: '<path d="M4 4h7a3 3 0 013 3v13a2 2 0 00-2-2H4z"/><path d="M20 4h-5a3 3 0 00-3 3v13a2 2 0 012-2h6z"/>', list: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>', on: '<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 8a5 5 0 010 8"/>', off: '<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/>', exit: '<path d="M10 4H5v16h5"/><path d="M14 8l4 4-4 4M18 12H9"/>' };
+  const ICO = { book: '<path d="M4 4h7a3 3 0 013 3v13a2 2 0 00-2-2H4z"/><path d="M20 4h-5a3 3 0 00-3 3v13a2 2 0 012-2h6z"/>', list: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>', on: '<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 8a5 5 0 010 8"/>', off: '<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/>', exit: '<path d="M10 4H5v16h5"/><path d="M14 8l4 4-4 4M18 12H9"/>', help: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 015 0c0 1.7-2.5 2-2.5 3.5M12 17h.01"/>' };
   const ico = (n) => '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICO[n] + '</svg>';
   function hud() {
     const el = $('hud'); if (!el || !G) return; const ob = objective();
     let shiftTxt = ROLES[G.role].label + (G.mode === 'demo' ? ' · Manager demo' : G.mode === 'practice' ? ' · Practice' : ''); let dots = '';
     if (S.run) { const sh = shiftById(S.run.id); shiftTxt = sh.title + ': ' + sh.name; dots = '<div class="hDots" aria-label="Step ' + (S.run.step + 1) + ' of ' + sh.steps.length + '">' + sh.steps.map((s, i) => '<i class="' + (i < S.run.step ? 'd' : i === S.run.step ? 'c' : '') + '"></i>').join('') + '</div>'; }
     el.innerHTML = '<div class="hcard hObj"><div class="hLogo" aria-hidden="true">FT</div><div class="hTxt"><div class="hShift">' + esc(shiftTxt) + '</div><div class="hGoal">' + phx(ob ? ob.label : 'Explore the club') + '</div>' + dots + '</div></div>' +
-      '<div class="hcard hTools"><button class="hb" id="hBook" title="Menu Book (B)">' + ico('book') + '<span>Menu</span></button><button class="hb" id="hShifts" title="Shifts (M)">' + ico('list') + '<span>Shifts</span></button><button class="hb" id="hScore" title="Scorecard">' + ico('star') + '<span>Score</span></button><button class="hb" id="hMute" aria-label="Music on or off">' + ico(muted ? 'off' : 'on') + '</button><button class="hb" id="hExit" aria-label="Back to title">' + ico('exit') + '</button></div>';
+      '<div class="hcard hTools"><button class="hb" id="hBook" title="Menu Book (B)">' + ico('book') + '<span>Menu</span></button><button class="hb" id="hShifts" title="Shifts (M)">' + ico('list') + '<span>Shifts</span></button><button class="hb" id="hScore" title="Scorecard">' + ico('star') + '<span>Score</span></button><button class="hb" id="hHow" title="How to play">' + ico('help') + '<span>How to</span></button><button class="hb" id="hMute" aria-label="Music on or off">' + ico(muted ? 'off' : 'on') + '</button><button class="hb" id="hExit" aria-label="Back to title">' + ico('exit') + '</button></div>';
     const bl = (id, fn) => { $(id).onclick = (e) => { if (e.detail > 0) e.currentTarget.blur(); if (S.dlg) closeDlg(); fn(); }; };
-    bl('hBook', () => openMenuBook()); bl('hShifts', openShifts); bl('hScore', openScore); bl('hMute', toggleMute); bl('hExit', toTitle);
+    bl('hBook', () => openMenuBook()); bl('hShifts', openShifts); bl('hScore', openScore); bl('hMute', toggleMute); bl('hHow', openHowTo); bl('hExit', toTitle);
   }
   function banner(title, sub) { S.banner = { title, sub, t: 0 }; $('live').textContent = title; }
 
@@ -1660,10 +1679,13 @@ const CHASE = [
   /* ---------------- boot ---------------- */
   function boot() {
     setupTouch(); G = store.get(); refreshTitle();
-    $('bStart').onclick = () => { if (G && !confirmNew()) return; G = null; setupFlow(false, 'full'); };
+    $('bStart').onclick = () => { if (G && G._temp) G = null; if (G && !confirmNew()) return; G = null; setupFlow(false, 'full'); };
     $('bPractice').onclick = () => { if (G) { G.mode = G.mode === 'demo' ? 'demo' : 'practice'; persist(); enterGame(); } else setupFlow(false, 'practice'); };
     $('bCont').onclick = () => { G = store.get(); if (G) enterGame(); };
+    $('bPractice').onclick = ((orig) => () => { if (G && G._temp) G = null; orig(); })($('bPractice').onclick);
     $('bMore').onclick = openMore;
+    $('bHow').onclick = () => openHowTo('title');
+    $('bChase').onclick = () => { const s0 = store.get(); if (s0) G = s0; else G = Object.assign(newGame({ name: 'Guest', role: 'server', mode: 'practice' }), { _temp: true }); openChase(); };
     window.addEventListener('resize', () => { if (inGame()) { resize(); snapCam(); } });
     IMG.onload = () => { if (!tRaf) titleLoop(); }; if (IMG.complete) titleLoop();
     setTimeout(() => { try { ($('bCont').hidden ? $('bStart') : $('bCont')).focus(); } catch (e) { } }, 60);
