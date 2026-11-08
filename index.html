@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corporate Ideas</title>
+<meta name="description" content="Training games and interactive learning built for businesses by Dr. Akash Garg.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f1e4;--ink:#1d2622;--mut:#5d5a4e;--g:#1f4434;--gold:#c9a24a;--card:#fffaf0;--line:#e4d9bf}
+@media (prefers-color-scheme:dark){:root{--bg:#121a16;--ink:#ece6d6;--mut:#b2ab98;--g:#9cc7b0;--card:#1b2620;--line:#2c3a32}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:500 17px/1.55 Nunito,system-ui,sans-serif}
+.w{max-width:920px;margin:0 auto;padding:56px 20px 64px}
+.k{font:900 12px Nunito;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+h1{font:700 clamp(38px,7vw,58px)/1.05 "Cormorant Garamond",Georgia,serif;margin:10px 0 12px;color:var(--g)}
+.lead{max-width:640px;color:var(--mut);font-size:18px;margin:0 0 36px}
+.card{display:grid;grid-template-columns:120px minmax(0,1fr);gap:20px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s}
+.card:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(20,40,30,.14)}
+.ic{width:120px;height:120px;border-radius:14px;background:#1f4434;display:grid;place-items:center;color:#e6c878;font:700 30px "Cormorant Garamond",serif;text-align:center;line-height:1}
+.card h2{margin:0 0 4px;font:700 28px "Cormorant Garamond",serif;color:var(--g)}
+.card p{margin:0 0 10px;color:var(--mut)}
+.tags{display:flex;gap:6px;flex-wrap:wrap}.tags span{font:800 12px Nunito;border:1px solid var(--line);border-radius:20px;padding:3px 10px;color:var(--mut)}
+.go{font:900 15px Nunito;color:var(--g)}
+@media (max-width:560px){.card{grid-template-columns:minmax(0,1fr)}.ic{width:72px;height:72px;font-size:20px}}
+footer{margin-top:48px;color:var(--mut);font-size:14px}
+</style>
+</head>
+<body>
+<main class="w">
+  <div class="k">Dr. Akash Garg</div>
+  <h1>Corporate Ideas</h1>
+  <p class="lead">Training games and interactive learning built for businesses: staff onboarding, procedures and product knowledge, taught the way people actually remember them.</p>
+  <a class="card" href="carolina-country-club/">
+    <div class="ic" aria-hidden="true">First<br>Tee</div>
+    <div>
+      <h2>First Tee: Your First Shift</h2>
+      <p>A walkable pixel clubhouse that trains new country club staff on service, menus, allergies and safety. Four server shifts, a menu quiz show against the chef, and a printable certificate. Proposal build for The Carolina Country Club.</p>
+      <div class="tags"><span>Hospitality</span><span>New hire onboarding</span><span>Proposal</span></div>
+      <p class="go" style="margin-top:12px">Play it &rarr;</p>
+    </div>
+  </a>
+  <footer>Built by Dr. Akash Garg &middot; Dr. Garg Learning</footer>
+</main>
+</body>
+</html>
